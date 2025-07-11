@@ -20,7 +20,7 @@
 		<sonar.projectKey>RayGriffon_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD</sonar.projectKey>
 		<sonar.sources>back/src</sonar.sources>
 		<sonar.tests>back/src/test</sonar.tests>
-		<sonar.java.binaries>back/target/classes</sonar.java.binaries>
+		<sonar.java.binaries>target/classes</sonar.java.binaries>
 		<sonar.coverage.jacoco.xmlReportPaths>back/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 
 	</properties>
