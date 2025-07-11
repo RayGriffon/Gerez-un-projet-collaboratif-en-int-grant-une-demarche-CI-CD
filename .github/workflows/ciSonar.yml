@@ -39,7 +39,7 @@ jobs:
       ### BACK-END ###
       - name: Install Maven dependencies and run tests
         working-directory: back
-        run: mvn clean install
+        run: mvn clean verify
 
       ### SONAR ###
       - name: SonarCloud Scan
