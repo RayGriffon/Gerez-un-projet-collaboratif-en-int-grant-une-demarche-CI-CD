@@ -38,3 +38,20 @@ jobs:
         with:
           name: frontend-coverage
           path: front/coverage
+
+      ### BACK-END ###
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+
+      - name: Install Maven dependencies and run tests
+        working-directory: back
+        run: mvn clean install
+
+      - name: Upload Jacoco report
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage
+          path: back/target/site/jacoco
