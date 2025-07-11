@@ -21,16 +21,45 @@ jobs:
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-      - name: Install Node
+      ### FRONT-END ###
+      - name: Set up Node.js
         uses: actions/setup-node@v4
-        with: { 'node-version': '20' }
-      - name: npm install & tests
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install front-end dependencies
+        working-directory: front
+        run: npm ci
+
+      - name: Run front-end tests with coverage
         working-directory: front
         run: |
-          npm ci && npm run test -- --watch=false --code-coverage --browsers=ChromeHeadless --no-sandbox
-      - name: build & tests
+          npm run test -- --watch=false --code-coverage
+
+      - name: Upload Angular coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage
+          path: front/coverage
+
+      ### BACK-END ###
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+
+      - name: Install Maven dependencies and run tests
         working-directory: back
-        run: mvn clean verify
+        run: mvn clean install
+
+      - name: Upload Jacoco report
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage
+          path: back/target/site/jacoco
+
+        ### SONAR ###
       - name: SonarCloud Scan
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
