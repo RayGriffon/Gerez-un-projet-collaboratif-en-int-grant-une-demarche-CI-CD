@@ -47,12 +47,13 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-          -Dsonar.projectKey=RayGriffon_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD \
-          -Dsonar.organization=raygriffon \
-          -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
-          -Dsonar.typescript.lcov.reportPaths=../front/coverage/lcov.info \
-          -Dsonar.sources=src,../front/src \
-          -Dsonar.tests=src/test,../front/src \
-          -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts
+        run: |
+          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+            -Dsonar.projectKey=RayGriffon_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD \
+            -Dsonar.organization=raygriffon \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
+            -Dsonar.typescript.lcov.reportPaths=../front/coverage/lcov.info \
+            -Dsonar.sources=src,../front/src \
+            -Dsonar.tests=src/test,../front/src \
+            -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts
