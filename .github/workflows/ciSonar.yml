@@ -7,25 +7,19 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
-  sonarqube:
-    name: SonarQube
+  sonarcloud:
+    name: Analyze with SonarCloud
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with: { fetch-depth: 0 }
-      - name: Set up JDK 11
-        uses: actions/setup-java@v4
-        with: { distribution: 'temurin', java-version: '11' }
-      - name: Cache Maven deps
-        uses: actions/cache@v4
         with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-      ### FRONT-END ###
+          fetch-depth: 0
+
+      ### FRONT ###
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 20
 
       - name: Install front-end dependencies
         working-directory: front
@@ -36,25 +30,29 @@ jobs:
         run: |
           npm run test -- --watch=false --code-coverage
 
-      ### BACK-END ###
-      - name: Install Maven dependencies and run tests
+      ### BACK ###
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 11
+
+      - name: Cache Maven deps
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+
+      - name: Run back-end tests and generate coverage
         working-directory: back
         run: mvn clean verify
 
       ### SONAR ###
-      - name: SonarCloud Scan
-        working-directory: back
+      - name: Run SonarCloud analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          mvn -f back/pom.xml -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:5.1.0.4751:sonar \
-            -Dsonar.projectKey=RayGriffon_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD \
-            -Dsonar.organization=raygriffon \
-            -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.coverage.jacoco.xmlReportPaths=back/target/site/jacoco/jacoco.xml \
-            -Dsonar.typescript.lcov.reportPaths=front/coverage/lcov.info \
-            -Dsonar.sources=back/src/main,front/src \
-            -Dsonar.tests=back/src/test,front/src \
-            -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts \
-            -Dsonar.test.inclusions=back/src/test/**/*.java,front/src/**/*.spec.ts
+          curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
+          unzip sonar-scanner.zip
+          ./sonar-scanner-*/bin/sonar-scanner \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
