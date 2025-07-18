@@ -54,7 +54,7 @@ jobs:
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
             -Dsonar.typescript.lcov.reportPaths=../front/coverage/lcov.info \
-            -Dsonar.sources=src/main,../front/src \
-            -Dsonar.tests=src/test,../front/src \
+            -Dsonar.sources=src/main,/front/src \
+            -Dsonar.tests=src/test,/front/src \
             -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts \
             -Dsonar.test.inclusions=src/test/**/*.java,../front/src/**/*.spec.ts
