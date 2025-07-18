@@ -108,6 +108,7 @@ jobs:
           unzip sonar-scanner.zip
           ./sonar-scanner-*/bin/sonar-scanner \
             -Dsonar.login=${{ env.SONAR_TOKEN }}
+            
 
 
   docker-deploy:
