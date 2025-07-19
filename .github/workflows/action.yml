@@ -36,7 +36,7 @@ jobs:
 
       - name: Run front-end tests with coverage
         working-directory: front
-        run: npm run test -- --watch=false
+        run: npm run test -- --watch=false --code-coverage
 
       - name: Upload front-end coverage
         uses: actions/upload-artifact@v4
